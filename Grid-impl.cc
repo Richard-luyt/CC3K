@@ -279,10 +279,3 @@ void create(Grid& g, vector<unique_ptr<Enemy>>& enemies, Player& pc, vector<Drag
         
 }
 
-//To be added in the utilities.cc file
-bool compare(const Enemy *A, const Enemy *B) {
-    if(A->getRow() != B->getRow()) {
-        return A->getRow() < B->getRow();
-    }
-    return A->getCol() < B->getCol();
-}
