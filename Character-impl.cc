@@ -1,8 +1,17 @@
 module character;
+import state;
 
 Player::Player(int startHp, int startAtk, int startDef, int startRow, int startCol)
     : hp(startHp), atk(startAtk), def(startDef), row(startRow), col(startCol),
       maxHP(startHp), gold(0) {}
+
+int Player::getAtkClean() {
+    return atk;
+}
+
+int Player::getDefClean() {
+    return def;
+}
 
 int Player::getHp() const {
     return hp;
@@ -58,7 +67,10 @@ int Shade::getDef(Enemy &Other) {
     return def + defModif;
 }
 
-void Shade::damageDealt(Enemy &Other) {
+int Shade::damageDealt(Enemy &Other) {
+    int damage = static_cast<int>(ceil((100.0 / (100 + Other.getDef(*this))) * getAtk(Other)));
+    Other.setHp(max(Other.getHp() - damage, 0));
+    return damage;
 }
 
 // ===== Drow =====
@@ -75,7 +87,14 @@ int Drow::getDef(Enemy &Other) {
     return def + defModif;
 }
 
-void Drow::damageDealt(Enemy &Other) {
+int Drow::damageDealt(Enemy &Other) {
+    int damage = static_cast<int>(ceil((100.0 / (100 + Other.getDef(*this))) * getAtk(Other)));
+    Other.setHp(max(Other.getHp() - damage, 0));
+    return damage;
+}
+
+PlayerT Drow::getType() {
+    return PlayerT::Drow;
 }
 
 // ===== Vampire =====
@@ -91,12 +110,19 @@ int Vampire::getDef(Enemy &Other) {
     return def + defModif;
 }
 
-void Vampire::damageDealt(Enemy &Other) {
+int Vampire::damageDealt(Enemy &Other) {
+    int damage = static_cast<int>(ceil((100.0 / (100 + Other.getDef(*this))) * getAtk(Other)));
+    Other.setHp(max(Other.getHp() - damage, 0));
     if (dynamic_cast<Dwarf*>(&Other) != nullptr) {
         setHp(getHp() - 5);
     } else {
         setHp(getHp() + 5);
     }
+    return damage;
+}
+
+PlayerT Vampire::getType() {
+    return PlayerT::Vampire;
 }
 
 // ===== Troll =====
@@ -113,7 +139,14 @@ int Troll::getDef(Enemy &Other) {
     return def + defModif;
 }
 
-void Troll::damageDealt(Enemy &Other) {
+int Troll::damageDealt(Enemy &Other) {
+    int damage = static_cast<int>(ceil((100.0 / (100 + Other.getDef(*this))) * getAtk(Other)));
+    Other.setHp(max(Other.getHp() - damage, 0));
+    return damage;
+}
+
+PlayerT Troll::getType() {
+    return PlayerT::Troll;
 }
 
 // ===== Goblin =====
@@ -129,7 +162,14 @@ int Goblin::getDef(Enemy &Other) {
     return def + defModif;
 }
 
-void Goblin::damageDealt(Enemy &Other) {
+int Goblin::damageDealt(Enemy &Other) {
+    int damage = static_cast<int>(ceil((100.0 / (100 + Other.getDef(*this))) * getAtk(Other)));
+    Other.setHp(max(Other.getHp() - damage, 0));
+    return damage;
+}
+
+PlayerT Goblin::getType() {
+    return PlayerT::Goblin;
 }
 
 // ENEMY
@@ -190,7 +230,14 @@ int Human::getDef(Player &Other) {
     return def;
 }
 
-void Human::damageDealt(Player &Other) {
+int Human::damageDealt(Player &Other) {
+    int damage = static_cast<int>(ceil((100.0 / (100 + Other.getDef(*this))) * getAtk(Other)));
+    Other.setHp(max(Other.getHp() - damage, 0));
+    return damage;
+}
+
+EnemyT getType() {
+    return EnemyT::Human;
 }
 
 // ===== Dwarf =====
@@ -207,7 +254,14 @@ int Dwarf::getDef(Player &Other) {
     return def;
 }
 
-void Dwarf::damageDealt(Player &Other) {
+int Dwarf::damageDealt(Player &Other) {
+    int damage = static_cast<int>(ceil((100.0 / (100 + Other.getDef(*this))) * getAtk(Other)));
+    Other.setHp(max(Other.getHp() - damage, 0));
+    return damage;
+}
+
+EnemyT getType() {
+    return EnemyT::Dwarf;
 }
 
 // ===== Elf =====
@@ -224,12 +278,19 @@ int Elf::getDef(Player &Other) {
     return def;
 }
 
-void Elf::damageDealt(Player &Other) {
+int Elf::damageDealt(Player &Other) {
+    int damage = static_cast<int>(ceil((100.0 / (100 + Other.getDef(*this))) * getAtk(Other)));
+    Other.setHp(max(Other.getHp() - damage, 0));
+    return damage;
 }
 
 int Elf::getAttackCount() const {
     if (dynamic_cast<Drow*>(&/* need a Player& here */) ) {} 
     return 2;
+}
+
+EnemyT getType() {
+    return EnemyT::Elf;
 }
 
 // ===== Orc =====
@@ -249,7 +310,14 @@ int Orc::getDef(Player &Other) {
     return def;
 }
 
-void Orc::damageDealt(Player &Other) {
+int Orc::damageDealt(Player &Other) {
+    int damage = static_cast<int>(ceil((100.0 / (100 + Other.getDef(*this))) * getAtk(Other)));
+    Other.setHp(max(Other.getHp() - damage, 0));
+    return damage;
+}
+
+EnemyT getType() {
+    return EnemyT::Ord;
 }
 
 // ===== Merchant =====
@@ -266,7 +334,14 @@ int Merchant::getDef(Player &Other) {
     return def;
 }
 
-void Merchant::damageDealt(Player &Other) {
+int Merchant::damageDealt(Player &Other) {
+    int damage = static_cast<int>(ceil((100.0 / (100 + Other.getDef(*this))) * getAtk(Other)));
+    Other.setHp(max(Other.getHp() - damage, 0));
+    return damage;
+}
+
+EnemyT getType() {
+    return EnemyT::Merchant;
 }
 
 // ===== Halfling =====
@@ -283,11 +358,18 @@ int Halfling::getDef(Player &Other) {
     return def;
 }
 
-void Halfling::damageDealt(Player &Other) {
+int Halfling::damageDealt(Player &Other) {
+    int damage = static_cast<int>(ceil((100.0 / (100 + Other.getDef(*this))) * getAtk(Other)));
+    Other.setHp(max(Other.getHp() - damage, 0));
+    return damage;
 }
 
 bool Halfling::causesOpponentMiss() const {
     return (rand() % 2 == 0);
+}
+
+EnemyT getType() {
+    return EnemyT::Halfling;
 }
 
 // ===== Dragon =====
@@ -304,5 +386,12 @@ int Dragon::getDef(Player &Other) {
     return def;
 }
 
-void Dragon::damageDealt(Player &Other) {
+int Dragon::damageDealt(Player &Other) {
+    int damage = static_cast<int>(ceil((100.0 / (100 + Other.getDef(*this))) * getAtk(Other)));
+    Other.setHp(max(Other.getHp() - damage, 0));
+    return damage;
+}
+
+EnemyT getType() {
+    return EnemyT::Dragon;
 }
