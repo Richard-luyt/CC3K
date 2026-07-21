@@ -89,7 +89,7 @@ export class Enemy {
         int def;
         int row;
         int col;
-        int gold; // How much gold each enemy has
+        int gold; // How much gold each enemy drops when killed
 
         Enemy(int startHp, int startAtk, int startDef, int startRow, int startCol);
     public:
@@ -97,6 +97,9 @@ export class Enemy {
         virtual int getAtk (Player &Other) = 0;
         virtual int getDef (Player &Other) = 0;
         virtual void damageDealt(Player &Other) = 0;
+        virtual int getAttackCount() const { return 1; }          // Elf overrides
+        virtual bool causesOpponentMiss() const { return false; } // Halfling overrides
+        int getGold() const;
         int getRow() const;
         int getCol() const;
         bool isAlive() const;
@@ -129,6 +132,7 @@ export class Elf : public Enemy {
         int getAtk(Player &Other) override;
         int getDef(Player &Other) override;
         void damageDealt(Player &Other) override;
+        int getAttackCount() const override;
 };
 
 export class Orc : public Enemy {
@@ -153,6 +157,7 @@ export class Halfling : public Enemy {
         int getAtk(Player &Other) override;
         int getDef(Player &Other) override;
         void damageDealt(Player &Other) override;
+        bool causesOpponentMiss() const override;
 };
 
 export class Dragon : public Enemy {
