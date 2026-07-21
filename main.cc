@@ -28,6 +28,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
     bool freeze = false;
     string action = "";
     bool knownPotion[6] = {};
+    char character = '.';
 
     for(int i = 0; i < 5; i++) {
 
@@ -51,30 +52,15 @@ GameResult runGame(int argc, char **argv, Player &pc) {
             return GameResult::Quit;
         }
 
-        if(argc != 1) {
-            string temp;
-            for(int j = 0; j < i * 25; j++) {
-                if(!getline(iff, temp)) {
-                    cout << "Lost floor " << j << endl;
-                    return GameResult::Quit;
-                }
-            }
-            for (int j = 0; j < 25; j++) {
-                getline(iff, map[j]);
-            }    
-        }
-        
+        parse(map, enemies, pc, dragonHoards, iff);
         Grid game{map};
 
         if(argc == 1) {
             create(game, enemies, pc, dragonHoards);
-        } else {
-            parse(game, enemies, pc, dragonHoards);
-            linkDragonHoards(enemies, dragonHoards);
-        }
 
-        
-        parse(game, enemies, pc, dragonHoards, iff);
+        } 
+        linkDragonHoards(enemies, dragonHoards);
+
         // all the possible commands:
         // 1. dir : no,so,ea,we,ne,nw,se,sw
         // 2. u + dir -> use the potion
@@ -352,7 +338,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                                 if(choice == 1) {
                                     int nrow = element->getRow() + dx[j];
                                     int ncol = element->getCol() + dy[j];
-                                    char character = '.';
+                                    
                                     game.move(element->getRow(), element->getCol(), nrow, ncol, character);
                                     element->setPosition(nrow, ncol);
                                     break;
