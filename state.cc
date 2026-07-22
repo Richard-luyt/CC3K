@@ -21,6 +21,7 @@ export struct EnemyInfo {
     pair<int,int> PlayerPos;
 };
 
+
 // Potion
 // 0 - RH
 // 1 - BA

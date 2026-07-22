@@ -25,6 +25,35 @@ int Player::getHp() const {
     return hp;
 }
 
+void Player::drinkPotion(int potionType) {
+    switch (potionType) {
+        case 0: {
+            int amount = static_cast<int>((rand() % 10 + 1) * potionMult);
+            setHp(min(hp + amount, maxHP));
+            break;
+        }
+        case 1:
+            atkModif += static_cast<int>(5 * potionMult);
+            break;
+        case 2:
+            defModif += static_cast<int>(5 * potionMult);
+            break;
+        case 3: { 
+            int amount = static_cast<int>((rand() % 10 + 1) * potionMult);
+            setHp(max(hp - amount, 0));
+            break;
+        }
+        case 4:
+            atkModif -= static_cast<int>(5 * potionMult);
+            break;
+        case 5:  
+            defModif -= static_cast<int>(5 * potionMult);
+            break;
+        default:
+            break; 
+    }
+}
+
 int Player::getGold() const {
     return gold;
 }
