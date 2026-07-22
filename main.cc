@@ -1,7 +1,6 @@
-import enemy;
-import player;
-import grid;
 import state;
+import character;
+import grid;
 import utility;
 
 import <iostream>;
@@ -28,7 +27,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
     bool freeze = false;
     string action = "";
     bool knownPotion[6] = {};
-    char character = '.';
+    char temp_character = '.';
 
     for(int i = 0; i < 5; i++) {
 
@@ -45,21 +44,26 @@ GameResult runGame(int argc, char **argv, Player &pc) {
             filename = argv[1];
         }
 
-        iffstream iff{filename};
+        //cout << "before parsing" << endl;
+
+        ifstream iff{filename};
 
         if(!iff) {
             cout << "The floor file can not be read" << endl;
             return GameResult::Quit;
         }
 
+        cout << "before parsing" << endl;
         parse(map, enemies, pc, dragonHoards, iff);
         Grid game{map};
-
+        cout << "before create" << endl;
         if(argc == 1) {
             create(game, enemies, pc, dragonHoards);
 
         } 
         linkDragonHoards(enemies, dragonHoards);
+
+        cout << "done" << endl;
 
         // all the possible commands:
         // 1. dir : no,so,ea,we,ne,nw,se,sw
@@ -110,7 +114,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                     Display(game, pc, i + 1, "There is no potion in that direction.");
                     continue;
                 }
-                int type = UsePotion(pc, nrow, ncol);
+                int type = UsePotion(game, pc, nrow, ncol);
                 if(knownPotion[type] == false) {
                     knownPotion[type] = true;
                     action += "PC Discovered new potion " + potionNames[type];
@@ -139,7 +143,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
 
                         char T = game.get_position(nrow, ncol);
                         int damage = playerAttack(pc, *element);
-                        int nowHP = element->getHP();
+                        int nowHP = element->getHp();
                         action += "PC deals " + to_string(damage) + " damage to " + T + " (" + to_string(nowHP) + " HP). ";
 
                         if(!element->deathProcessed && !element->isAlive()) {
@@ -339,7 +343,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                                     int nrow = element->getRow() + dx[j];
                                     int ncol = element->getCol() + dy[j];
                                     
-                                    game.move(element->getRow(), element->getCol(), nrow, ncol, character);
+                                    game.move(element->getRow(), element->getCol(), nrow, ncol, temp_character);
                                     element->setPosition(nrow, ncol);
                                     break;
                                 } else {
@@ -357,8 +361,8 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                 return GameResult::Died;
             }
 
-            if(pc.getType == PlayerT::Troll && pc.isAlive() == true) {
-                pc.setHP(pc.getHP() + 5);
+            if(pc.getType() == PlayerT::Troll && pc.isAlive() == true) {
+                pc.setHp(pc.getHp() + 5);
             }
 
             Display(game, pc, i+1, action);

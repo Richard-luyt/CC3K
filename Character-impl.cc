@@ -1,16 +1,24 @@
 module character;
 import state;
+import <cmath>;
+
+using namespace std;
 
 Player::Player(int startHp, int startAtk, int startDef, int startRow, int startCol)
     : hp(startHp), atk(startAtk), def(startDef), row(startRow), col(startCol),
       maxHP(startHp), gold(0) {}
 
-int Player::getAtkClean() {
+int Player::getAtkClean() const{
     return atk;
 }
 
-int Player::getDefClean() {
+int Player::getDefClean() const{
     return def;
+}
+
+void Player::resetAtkDefdelta(){
+    atkModif = 0;
+    defModif = 0;
 }
 
 int Player::getHp() const {
@@ -19,6 +27,10 @@ int Player::getHp() const {
 
 int Player::getGold() const {
     return gold;
+}
+
+void Player::drinkPotion(int type) {
+    return;
 }
 
 void Player::addGold(int amount) {
@@ -55,8 +67,8 @@ void Player::setPosition(int newRow, int newCol) {
 }
 
 // ===== Shade =====
-Shade::Shade(int row, int col)
-    : Player(125, 25, 25, row, col) {
+Shade::Shade()
+    : Player(125, 25, 25, 0, 0) {
 }
 
 int Shade::getAtk(Enemy &Other) {
@@ -73,9 +85,13 @@ int Shade::damageDealt(Enemy &Other) {
     return damage;
 }
 
+PlayerT Shade::getType() const {
+    return PlayerT::Shade;
+}
+
 // ===== Drow =====
-Drow::Drow(int row, int col)
-    : Player(150, 25, 15, row, col) {
+Drow::Drow()
+    : Player(150, 25, 15, 0, 0) {
     potionMult = 1.5;
 }
 
@@ -93,13 +109,13 @@ int Drow::damageDealt(Enemy &Other) {
     return damage;
 }
 
-PlayerT Drow::getType() {
+PlayerT Drow::getType() const {
     return PlayerT::Drow;
 }
 
 // ===== Vampire =====
-Vampire::Vampire(int row, int col)
-    : Player(50, 25, 25, row, col) {
+Vampire::Vampire()
+    : Player(50, 25, 25, 0, 0) {
 }
 
 int Vampire::getAtk(Enemy &Other) {
@@ -121,13 +137,13 @@ int Vampire::damageDealt(Enemy &Other) {
     return damage;
 }
 
-PlayerT Vampire::getType() {
+PlayerT Vampire::getType() const {
     return PlayerT::Vampire;
 }
 
 // ===== Troll =====
-Troll::Troll(int row, int col)
-    : Player(120, 25, 15, row, col) {
+Troll::Troll()
+    : Player(120, 25, 15, 0, 0) {
     maxHP = 120;
 }
 
@@ -145,13 +161,13 @@ int Troll::damageDealt(Enemy &Other) {
     return damage;
 }
 
-PlayerT Troll::getType() {
+PlayerT Troll::getType() const {
     return PlayerT::Troll;
 }
 
 // ===== Goblin =====
-Goblin::Goblin(int row, int col)
-    : Player(110, 15, 20, row, col) {
+Goblin::Goblin()
+    : Player(110, 15, 20, 0, 0) {
 }
 
 int Goblin::getAtk(Enemy &Other) {
@@ -168,7 +184,7 @@ int Goblin::damageDealt(Enemy &Other) {
     return damage;
 }
 
-PlayerT Goblin::getType() {
+PlayerT Goblin::getType() const {
     return PlayerT::Goblin;
 }
 
@@ -217,8 +233,8 @@ void Enemy::setPosition(int newRow, int newCol) {
 
 
 // ===== Human =====
-Human::Human(int row, int col)
-    : Enemy(140, 20, 20, row, col) {
+Human::Human()
+    : Enemy(140, 20, 20, 0, 0) {
     gold = 4;
 }
 
@@ -236,13 +252,13 @@ int Human::damageDealt(Player &Other) {
     return damage;
 }
 
-EnemyT getType() {
+EnemyT Human::getType() const {
     return EnemyT::Human;
 }
 
 // ===== Dwarf =====
-Dwarf::Dwarf(int row, int col)
-    : Enemy(100, 20, 30, row, col) {
+Dwarf::Dwarf()
+    : Enemy(100, 20, 30, 0, 0) {
     gold = (rand() % 2 == 0) ? 1 : 2; // 50/50 small vs. normal pile
 }
 
@@ -260,13 +276,13 @@ int Dwarf::damageDealt(Player &Other) {
     return damage;
 }
 
-EnemyT getType() {
+EnemyT Dwarf::getType() const {
     return EnemyT::Dwarf;
 }
 
 // ===== Elf =====
-Elf::Elf(int row, int col)
-    : Enemy(140, 30, 10, row, col) {
+Elf::Elf()
+    : Enemy(140, 30, 10, 0, 0) {
     gold = (rand() % 2 == 0) ? 1 : 2; // 50/50 small vs. normal pile
 }
 
@@ -285,17 +301,16 @@ int Elf::damageDealt(Player &Other) {
 }
 
 int Elf::getAttackCount() const {
-    if (dynamic_cast<Drow*>(&/* need a Player& here */) ) {} 
-    return 2;
+    return 1;
 }
 
-EnemyT getType() {
+EnemyT Elf::getType() const {
     return EnemyT::Elf;
 }
 
 // ===== Orc =====
-Orc::Orc(int row, int col)
-    : Enemy(180, 30, 25, row, col) {
+Orc::Orc()
+    : Enemy(180, 30, 25, 0, 0) {
     gold = (rand() % 2 == 0) ? 1 : 2;
 }
 
@@ -316,13 +331,14 @@ int Orc::damageDealt(Player &Other) {
     return damage;
 }
 
-EnemyT getType() {
-    return EnemyT::Ord;
+EnemyT Orc::getType() const {
+    return EnemyT::Orc;
 }
 
 // ===== Merchant =====
-Merchant::Merchant(int row, int col)
-    : Enemy(30, 70, 5, row, col) {
+
+Merchant::Merchant()
+    : Enemy(30, 70, 5, 0, 0) {
     gold = 4; // merchant hoard
 }
 
@@ -340,13 +356,14 @@ int Merchant::damageDealt(Player &Other) {
     return damage;
 }
 
-EnemyT getType() {
+EnemyT Merchant::getType() const {
     return EnemyT::Merchant;
 }
 
 // ===== Halfling =====
-Halfling::Halfling(int row, int col)
-    : Enemy(100, 15, 20, row, col) {
+
+Halfling::Halfling()
+    : Enemy(100, 15, 20, 0, 0) {
     gold = (rand() % 2 == 0) ? 1 : 2;
 }
 
@@ -368,13 +385,15 @@ bool Halfling::causesOpponentMiss() const {
     return (rand() % 2 == 0);
 }
 
-EnemyT getType() {
+EnemyT Halfling::getType() const {
     return EnemyT::Halfling;
 }
 
 // ===== Dragon =====
-Dragon::Dragon(int row, int col)
-    : Enemy(150, 20, 20, row, col) {
+
+
+Dragon::Dragon()
+    : Enemy(150, 20, 20, 0, 0) {
     gold = 0;
 }
 
@@ -392,6 +411,6 @@ int Dragon::damageDealt(Player &Other) {
     return damage;
 }
 
-EnemyT getType() {
+EnemyT Dragon::getType() const {
     return EnemyT::Dragon;
 }
