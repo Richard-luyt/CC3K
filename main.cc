@@ -297,7 +297,9 @@ GameResult runGame(int argc, char **argv, Player &pc) {
             
             sort(enemies.begin(), enemies.end(), compare);
             for(auto &element : enemies) {
+                int indicator = rng() % 2;
                 if(!element->isAlive()) { continue;}
+                char type = game.get_position(element->getRow(), element->getCol());
                 if(element->getType() == EnemyT::Dragon) {
                     bool checkAtk = false;
                     for(int j = 0; j < cntDragon; j++) {
@@ -307,19 +309,29 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                         }
                     }
                     if(checkAtk == false && IsNear(pc.getRow(), pc.getCol(), element->getRow(), element->getCol())) {
-                        int damage = enemyAttack(pc, *element);
-                        action += "Dragon deals " + to_string(damage) + " damage to PC.";
+                        if(indicator == 0) {
+                            int damage = enemyAttack(pc, *element);
+                            action += "Dragon deals " + to_string(damage) + " damage to PC.";    
+                        } else {
+                            action += "Dragon misses.";    
+                        }
+                        
                     }
                 } else if(IsNear(pc.getRow(), pc.getCol(), element->getRow(), element->getCol())) {
-                    if(element->getType() == EnemyT::Merchant && isMerchantHostile || element->getType() != EnemyT::Merchant) {
-                        int damage = enemyAttack(pc, *element);
-                        char type = game.get_position(element->getRow(), element->getCol());
-                        action += string(1, type) + " deals " + to_string(damage) + " damage to PC.";    
-                        if(pc.isAlive() == false) {
-                            cout << "The player Died" << endl;
-                            return GameResult::Died;
-                        }
+                    if(indicator == 0) {
+                        if(element->getType() == EnemyT::Merchant && isMerchantHostile || element->getType() != EnemyT::Merchant) {
+                            int damage = enemyAttack(pc, *element);
+                            
+                            action += string(1, type) + " deals " + to_string(damage) + " damage to PC.";    
+                            if(pc.isAlive() == false) {
+                                cout << "The player Died" << endl;
+                                return GameResult::Died;
+                            }
+                        }    
+                    } else {
+                        action += string(1, type) + " misses.";    
                     }
+                    
                 } else if(!freeze){
                     int dx[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
                     int dy[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
@@ -362,7 +374,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
             }
 
             if(pc.getType() == PlayerT::Troll && pc.isAlive() == true) {
-                pc.setHp(pc.getHp() + 5);
+                pc.onTurnEnd();
             }
 
             Display(game, pc, i+1, action);

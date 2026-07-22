@@ -68,7 +68,7 @@ bool Grid::move(int prev_row, int prev_col, int cur_row, int cur_col, char& curS
         if (Map[cur_row][cur_col] == '.') {
             Map[cur_row][cur_col] = Map[prev_row][prev_col];
             Map[prev_row][prev_col] = curStepOn;
-            curStepOn = Map[cur_row][cur_col];
+            curStepOn = '.';
             return true;
         }
         return false;
@@ -81,8 +81,10 @@ char Grid::get_position(int row, int col) const {
 
 Position Grid::generatePoint() const {
     int c = rand() % 5;
+    // cout << c << " ";
     while (isFull(Chambers[c])) {
         c = rand() % 5;
+        // cout << c << " ";
     }
 
     const Chamber& selectedChamber = Chambers[c];
@@ -217,7 +219,7 @@ void parse(string(&map)[25], vector<unique_ptr<Enemy>>& enemies, Player& pc, vec
 }
 
 void create(Grid& g, vector<unique_ptr<Enemy>>& enemies, Player& pc, vector<DragonHoard>& h) {
-
+    srand(static_cast<unsigned int>(time(nullptr)));
     Position p = g.generatePoint();
     pc.setPosition(p.row,p.col);
     g.Map[p.row][p.col] = '@';
