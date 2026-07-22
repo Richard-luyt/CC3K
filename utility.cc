@@ -1,15 +1,15 @@
 export module utility;
 
-import grid;
-import player;
-import enemy;
 import state;
+import character;
+import grid;
 
 import <iostream>;
 import <string>;
 import <utility>;
 import <cstdlib>;
 import <memory>;
+import <vector>;
 
 using namespace std;
 
@@ -22,11 +22,11 @@ export bool compare(const unique_ptr<Enemy> &A, const unique_ptr<Enemy> &B) {
 }
 
 export int playerAttack(Player &pc, Enemy &enemy) {
-    return pc.damagedealt(enemy);
+    return pc.damageDealt(enemy);
 }
 
 export int enemyAttack(Player &pc, Enemy &enemy) {
-    return enemy.damagedealt(pc);
+    return enemy.damageDealt(pc);
 }
 
 export bool verifyMove(const Grid &grid, int nextRow, int nextCol, bool player) {
@@ -95,7 +95,7 @@ export pair<int,int> nextMove(int row, int col, string direction) {
     }
 }
 
-bool validDirection(string direction) {
+export bool validDirection(string direction) {
     if(direction == "no") return true;
     if(direction == "so") return true;
     if(direction == "ea") return true;
@@ -134,7 +134,7 @@ export string Converter(string direction) {
     }
 }
 
-int UsePotion(Grid &game, Player &pc, int row, int col) {
+export int UsePotion(Grid &game, Player &pc, int row, int col) {
     int type = game.get_position(row, col) - '0';
     pc.drinkPotion(type);
     game.set_position(row, col, '.');
@@ -153,7 +153,7 @@ export void Display(const Grid &grid, const Player &pc, int floor, const string 
     cout << endl;
     PlayerT type = pc.getType();
     int gold = pc.getGold();
-    int HP = pc.getHP();
+    int HP = pc.getHp();
     int Atk = pc.getAtkClean();
     int Def = pc.getDefClean();
     cout << "Race : ";
@@ -170,7 +170,7 @@ export void Display(const Grid &grid, const Player &pc, int floor, const string 
 
 }
 
-void linkDragonHoards(vector<unique_ptr<Enemy>> &enemies, vector<DragonHoard> &dragonHoards) {
+export void linkDragonHoards(vector<unique_ptr<Enemy>> &enemies, vector<DragonHoard> &dragonHoards) {
     vector <Enemy *> Dragons;
     for (auto &element : enemies) {
         if (element->getType() == EnemyT::Dragon) {

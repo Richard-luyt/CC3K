@@ -15,9 +15,7 @@ bool Grid::isFull(const Chamber& c) const{
 
 Grid::Grid(const string CreateMap[25]) {
     for(int i = 0; i < 25; i++) {
-        for(int j = 0; j < 79; j++) {
-            Map[i][j] = CreateMap[i][j];
-        }
+        Map[i] = CreateMap[i];
     }
 
     vector<int> minCol1 = {4,4,4,4};

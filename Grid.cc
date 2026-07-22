@@ -1,14 +1,13 @@
 export module grid;
 
-import string;
-import iostream;
-import fstream;
-import vector;
-import random;
-import memory;
+import <string>;
+import <iostream>;
+import <fstream>;
+import <vector>;
+import <random>;
+import <memory>;
 
-import player;
-import enemy;
+import character;
 
 using namespace std;
 

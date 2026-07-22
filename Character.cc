@@ -1,7 +1,7 @@
 export module character;
 
-import string;
-import iostream;
+import <string>;
+import <iostream>;
 import state;
 
 using namespace std;
@@ -21,11 +21,12 @@ export class Player {
         int defModif = 0;
         double potionMult = 1.0;
         double goldMult = 1.0;
-        int getAtkClean();
-        int getDefClean();
-
         Player(int startHp, int startAtk, int startDef, int startRow, int startCol);
     public:
+
+        int getAtkClean() const;
+        int getDefClean() const;
+        void resetAtkDefdelta();
         char curStepOn = '.';
         int getHp() const;
         virtual int getAtk(Enemy &Other) = 0;
@@ -33,7 +34,7 @@ export class Player {
         virtual int damageDealt(Enemy &Other) = 0;
         virtual PlayerT getType() const = 0;
 
-        void drinkPotion();
+        void drinkPotion(int type);
         int getGold() const;
         void addGold(int amount);
         int getRow() const;
@@ -44,51 +45,52 @@ export class Player {
         void setAtk(int newAtk);
         void setDef(int newDef);
         void setPosition(int row, int col);
+        virtual ~Player() = default;
 };
 
 export class Shade : public Player {
     public:
-        Shade(int row, int col);  // hp=125, atk=25, def=25
+        Shade();  // hp=125, atk=25, def=25
         int getAtk (Enemy &Other) override;
         int getDef (Enemy &Other) override;
         int damageDealt(Enemy &Other) override;
-        PlayerT getType() override;
+        PlayerT getType() const override;
 };
 
 export class Drow : public Player {
     public:
-        Drow(int row, int col);  // hp=150, atk=25, def=15, potionMult=1.5
+        Drow();  // hp=150, atk=25, def=15, potionMult=1.5
         int getAtk (Enemy &Other) override;
         int getDef (Enemy &Other) override;
         int damageDealt(Enemy &Other) override;
-        PlayerT getType() override;
+        PlayerT getType() const override;
 };
 
 export class Vampire : public Player {
     public:
-        Vampire(int row, int col);  // hp=50, atk=25, def=25
+        Vampire();  // hp=50, atk=25, def=25
         int getAtk (Enemy &Other) override;
         int getDef (Enemy &Other) override;
         int damageDealt(Enemy &Other) override;
-        PlayerT getType() override;
+        PlayerT getType() const override;
 };
 
 export class Troll : public Player {
     public:
-        Troll(int row, int col);  // hp=120, atk=25, def=15, maxHP=120
+        Troll();  // hp=120, atk=25, def=15, maxHP=120
         int getAtk (Enemy &Other) override;
         int getDef (Enemy &Other) override;
         int damageDealt(Enemy &Other) override;
-        PlayerT getType() override;
+        PlayerT getType() const override;
 };
 
 export class Goblin : public Player {
     public:
-        Goblin(int row, int col);  // hp=110, atk=15, def=20
+        Goblin();  // hp=110, atk=15, def=20
         int getAtk (Enemy &Other) override;
         int getDef (Enemy &Other) override;
         int damageDealt(Enemy &Other) override;
-        PlayerT getType() override;
+        PlayerT getType() const override;
 };
 
 
@@ -103,6 +105,7 @@ export class Enemy {
 
         Enemy(int startHp, int startAtk, int startDef, int startRow, int startCol);
     public:
+        bool deathProcessed;
         int getHp() const;
         virtual int getAtk (Player &Other) = 0;
         virtual int getDef (Player &Other) = 0;
@@ -119,69 +122,70 @@ export class Enemy {
         void setAtk(int newAtk);
         void setDef(int newDef);
         void setPosition(int row, int col);
+        virtual ~Enemy() = default;
 };
 
 export class Human : public Enemy {
     public:
-        Human(int row, int col);  // hp=140, atk=20, def=20
+        Human();  // hp=140, atk=20, def=20
         int getAtk(Player &Other) override;
         int getDef(Player &Other) override;
         int damageDealt(Player &Other) override;
-        EnemyT getType() override;
+        EnemyT getType() const override;
 };
 
 export class Dwarf : public Enemy {
     public:
-        Dwarf(int row, int col);  // hp=100, atk=20, def=30
+        Dwarf();  // hp=100, atk=20, def=30
         int getAtk(Player &Other) override;
         int getDef(Player &Other) override;
         int damageDealt(Player &Other) override;
-        EnemyT getType() override;
+        EnemyT getType() const override;
 };
 
 export class Elf : public Enemy {
     public:
-        Elf(int row, int col);  // hp=140, atk=30, def=10
+        Elf();  // hp=140, atk=30, def=10
         int getAtk(Player &Other) override;
         int getDef(Player &Other) override;
         int damageDealt(Player &Other) override;
         int getAttackCount() const override;
-        EnemyT getType() override;
+        EnemyT getType() const override;
 };
 
 export class Orc : public Enemy {
     public:
-        Orc(int row, int col);  // hp=180, atk=30, def=25
+        Orc();  // hp=180, atk=30, def=25
         int getAtk(Player &Other) override;
         int getDef(Player &Other) override;
         int damageDealt(Player &Other) override;
-        EnemyT getType() override;
+        EnemyT getType() const override;
 };
 
 export class Merchant : public Enemy {
     public:
-        Merchant(int row, int col);  // hp=30, atk=70, def=5
+        Merchant();  // hp=30, atk=70, def=5
         int getAtk(Player &Other) override;
         int getDef(Player &Other) override;
         int damageDealt(Player &Other) override;
-        EnemyT getType() override;
+        EnemyT getType() const override;
 };
 
 export class Halfling : public Enemy {
     public:
-        Halfling(int row, int col);  // hp=100, atk=15, def=20
+        Halfling();  // hp=100, atk=15, def=20
         int getAtk(Player &Other) override;
         int getDef(Player &Other) override;
         int damageDealt(Player &Other) override;
         bool causesOpponentMiss() const override;
-        EnemyT getType() override;
+        EnemyT getType() const override;
 };
 
 export class Dragon : public Enemy {
     public:
-        Dragon(int row, int col);  // hp=150, atk=20, def=20
+        Dragon();  // hp=150, atk=20, def=20
         int getAtk(Player &Other) override;
         int getDef(Player &Other) override;
         int damageDealt(Player &Other) override;
-        EnemyT getType() override;
+        EnemyT getType() const override;
 };
