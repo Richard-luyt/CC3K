@@ -217,6 +217,8 @@ void Enemy::setPosition(int newRow, int newCol) {
 
 
 // ===== Human =====
+Human::Human() : Enemy(140, 20, 20, 0, 0) {}
+
 Human::Human(int row, int col)
     : Enemy(140, 20, 20, row, col) {
     gold = 4;
