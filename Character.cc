@@ -110,7 +110,7 @@ export class Enemy {
         virtual int getAtk (Player &Other) = 0;
         virtual int getDef (Player &Other) = 0;
         virtual int damageDealt(Player &Other) = 0;
-        virtual int getAttackCount() const { return 1; }          // Elf overrides
+        virtual int getAttackCount(Player &Other) const { return 1; } // Elf overrides
         virtual bool causesOpponentMiss() const { return false; } // Halfling overrides
         virtual EnemyT getType() const = 0;
         int getGold() const;
@@ -149,7 +149,7 @@ export class Elf : public Enemy {
         int getAtk(Player &Other) override;
         int getDef(Player &Other) override;
         int damageDealt(Player &Other) override;
-        int getAttackCount() const override;
+        int getAttackCount(Player &Other) const override;
         EnemyT getType() const override;
 };
 

@@ -1,6 +1,7 @@
 module character;
 import state;
 import <cmath>;
+import <climits>;
 
 using namespace std;
 
@@ -56,10 +57,6 @@ void Player::drinkPotion(int potionType) {
 
 int Player::getGold() const {
     return gold;
-}
-
-void Player::drinkPotion(int type) {
-    return;
 }
 
 void Player::addGold(int amount) {
@@ -145,6 +142,7 @@ PlayerT Drow::getType() const {
 // ===== Vampire =====
 Vampire::Vampire()
     : Player(50, 25, 25, 0, 0) {
+        maxHP = INT_MAX;
 }
 
 int Vampire::getAtk(Enemy &Other) {
@@ -262,7 +260,6 @@ void Enemy::setPosition(int newRow, int newCol) {
 
 
 // ===== Human =====
-Human::Human() : Enemy(140, 20, 20, 0, 0) {}
 
 Human::Human()
     : Enemy(140, 20, 20, 0, 0) {
@@ -331,8 +328,11 @@ int Elf::damageDealt(Player &Other) {
     return damage;
 }
 
-int Elf::getAttackCount() const {
-    return 1;
+int Elf::getAttackCount(Player &Other) const {
+    if (dynamic_cast<Drow*>(&Other) != nullptr) {
+        return 1;
+    }
+    return 2;
 }
 
 EnemyT Elf::getType() const {
