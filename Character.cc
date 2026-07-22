@@ -33,6 +33,7 @@ export class Player {
         virtual int getDef(Enemy &Other) = 0;
         virtual int damageDealt(Enemy &Other) = 0;
         virtual PlayerT getType() const = 0;
+        virtual void onTurnEnd() {}
 
         void drinkPotion(int type);
         int getGold() const;
@@ -82,6 +83,7 @@ export class Troll : public Player {
         int getDef (Enemy &Other) override;
         int damageDealt(Enemy &Other) override;
         PlayerT getType() const override;
+        void onTurnEnd() override;
 };
 
 export class Goblin : public Player {

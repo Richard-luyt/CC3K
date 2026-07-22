@@ -193,6 +193,10 @@ PlayerT Troll::getType() const {
     return PlayerT::Troll;
 }
 
+void Troll::onTurnEnd() {
+    setHp(min(hp + 5, maxHP));
+}
+
 // ===== Goblin =====
 Goblin::Goblin()
     : Player(110, 15, 20, 0, 0) {
