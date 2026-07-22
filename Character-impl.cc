@@ -2,6 +2,7 @@ module character;
 import state;
 import <cmath>;
 import <climits>;
+import <random>;
 
 using namespace std;
 
@@ -29,7 +30,7 @@ int Player::getHp() const {
 void Player::drinkPotion(int potionType) {
     switch (potionType) {
         case 0: {
-            int amount = static_cast<int>((rand() % 10 + 1) * potionMult);
+            int amount = static_cast<int>(10 * potionMult);
             setHp(min(hp + amount, maxHP));
             break;
         }
@@ -39,8 +40,8 @@ void Player::drinkPotion(int potionType) {
         case 2:
             defModif += static_cast<int>(5 * potionMult);
             break;
-        case 3: { 
-            int amount = static_cast<int>((rand() % 10 + 1) * potionMult);
+        case 3: {
+            int amount = static_cast<int>(10 * potionMult);
             setHp(max(hp - amount, 0));
             break;
         }
@@ -287,7 +288,6 @@ EnemyT Human::getType() const {
 // ===== Dwarf =====
 Dwarf::Dwarf()
     : Enemy(100, 20, 30, 0, 0) {
-    gold = (rand() % 2 == 0) ? 1 : 2; // 50/50 small vs. normal pile
 }
 
 int Dwarf::getAtk(Player &Other) {
@@ -311,7 +311,6 @@ EnemyT Dwarf::getType() const {
 // ===== Elf =====
 Elf::Elf()
     : Enemy(140, 30, 10, 0, 0) {
-    gold = (rand() % 2 == 0) ? 1 : 2; // 50/50 small vs. normal pile
 }
 
 int Elf::getAtk(Player &Other) {
@@ -342,7 +341,6 @@ EnemyT Elf::getType() const {
 // ===== Orc =====
 Orc::Orc()
     : Enemy(180, 30, 25, 0, 0) {
-    gold = (rand() % 2 == 0) ? 1 : 2;
 }
 
 int Orc::getAtk(Player &Other) {
@@ -395,7 +393,6 @@ EnemyT Merchant::getType() const {
 
 Halfling::Halfling()
     : Enemy(100, 15, 20, 0, 0) {
-    gold = (rand() % 2 == 0) ? 1 : 2;
 }
 
 int Halfling::getAtk(Player &Other) {
@@ -413,6 +410,7 @@ int Halfling::damageDealt(Player &Other) {
 }
 
 bool Halfling::causesOpponentMiss() const {
+    srand(static_cast<unsigned int>(time(nullptr)));
     return (rand() % 2 == 0);
 }
 
