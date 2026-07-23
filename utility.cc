@@ -150,7 +150,6 @@ export void Display(const Grid &grid, const Player &pc, int floor, const string 
     cout << "\033[H\033[2J" << flush; //used to clear screen up
 
     cout << grid;
-    cout << endl;
     PlayerT type = pc.getType();
     int gold = pc.getGold();
     int HP = pc.getHp();
@@ -162,7 +161,7 @@ export void Display(const Grid &grid, const Player &pc, int floor, const string 
     if(type == PlayerT::Vampire) {cout << "Vampire ";}
     if(type == PlayerT::Troll) {cout << "Troll ";}
     if(type == PlayerT::Goblin) {cout << "Goblin ";}
-    cout << "Gold: " << gold << endl;
+    cout << "Gold: " << gold << "                                                 Floor: " << floor << endl;
     cout << "HP: " << HP << endl;
     cout << "Atk: " << Atk << endl;
     cout << "Def: " << Def << endl;
@@ -192,11 +191,11 @@ export void linkDragonHoards(vector<unique_ptr<Enemy>> &enemies, vector<DragonHo
                     bestplace = distance;
                     bestind = i;
                 }
-            }            
+            }
+            i++;            
         }
         
         hoard.guardian = Dragons[bestind];
         Dragons.erase(Dragons.begin() + bestind);
-        i++;
     }
 }

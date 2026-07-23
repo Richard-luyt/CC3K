@@ -79,10 +79,10 @@ char Grid::get_position(int row, int col) const {
     return Map[row][col];
 }
 
-Position Grid::generatePoint() const {
+Position Grid::generatePoint(int stairChamber) const {
     int c = rand() % 5;
     // cout << c << " ";
-    while (isFull(Chambers[c])) {
+    while (isFull(Chambers[c]) || c == stairChamber) {
         c = rand() % 5;
         // cout << c << " ";
     }
@@ -113,7 +113,7 @@ Position Grid::generatePoint() const {
         }
     }
 
-    return Position{row, col};
+    return Position{row, col, c};
 
 }
 
@@ -219,12 +219,12 @@ void parse(string(&map)[25], vector<unique_ptr<Enemy>>& enemies, Player& pc, vec
 }
 
 void create(Grid& g, vector<unique_ptr<Enemy>>& enemies, Player& pc, vector<DragonHoard>& h) {
-    srand(static_cast<unsigned int>(time(nullptr)));
+    //srand(static_cast<unsigned int>(time(nullptr)));
     Position p = g.generatePoint();
     pc.setPosition(p.row,p.col);
     g.Map[p.row][p.col] = '@';
 
-    p = g.generatePoint();
+    p = g.generatePoint(p.chamber);
     g.Map[p.row][p.col] = '\\';
 
     for(int i = 0; i < 10; i++) {

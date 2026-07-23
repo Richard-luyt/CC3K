@@ -11,11 +11,11 @@ Player::Player(int startHp, int startAtk, int startDef, int startRow, int startC
       maxHP(startHp), gold(0) {}
 
 int Player::getAtkClean() const{
-    return atk;
+    return max(0, atk + atkModif);
 }
 
 int Player::getDefClean() const{
-    return def;
+    return max(0, def + defModif);
 }
 
 void Player::resetAtkDefdelta(){
@@ -99,11 +99,11 @@ Shade::Shade()
 }
 
 int Shade::getAtk(Enemy &Other) {
-    return atk + atkModif;
+    return max(0, atk + atkModif);
 }
 
 int Shade::getDef(Enemy &Other) {
-    return def + defModif;
+    return max(0, def + defModif);
 }
 
 int Shade::damageDealt(Enemy &Other) {
@@ -123,11 +123,11 @@ Drow::Drow()
 }
 
 int Drow::getAtk(Enemy &Other) {
-    return atk + atkModif;
+    return max(0, atk + atkModif);
 }
 
 int Drow::getDef(Enemy &Other) {
-    return def + defModif;
+    return max(0, def + defModif);
 }
 
 int Drow::damageDealt(Enemy &Other) {
@@ -147,18 +147,18 @@ Vampire::Vampire()
 }
 
 int Vampire::getAtk(Enemy &Other) {
-    return atk + atkModif;
+    return max(0, atk + atkModif);
 }
 
 int Vampire::getDef(Enemy &Other) {
-    return def + defModif;
+    return max(0, def + defModif);
 }
 
 int Vampire::damageDealt(Enemy &Other) {
     int damage = static_cast<int>(ceil((100.0 / (100 + Other.getDef(*this))) * getAtk(Other)));
     Other.setHp(max(Other.getHp() - damage, 0));
     if (dynamic_cast<Dwarf*>(&Other) != nullptr) {
-        setHp(getHp() - 5);
+        setHp(max(0, getHp() - 5));
     } else {
         setHp(getHp() + 5);
     }
@@ -176,11 +176,11 @@ Troll::Troll()
 }
 
 int Troll::getAtk(Enemy &Other) {
-    return atk + atkModif;
+    return max(0, atk + atkModif);
 }
 
 int Troll::getDef(Enemy &Other) {
-    return def + defModif;
+    return max(0, def + defModif);
 }
 
 int Troll::damageDealt(Enemy &Other) {
@@ -203,11 +203,11 @@ Goblin::Goblin()
 }
 
 int Goblin::getAtk(Enemy &Other) {
-    return atk + atkModif;
+    return max(0, atk + atkModif);
 }
 
 int Goblin::getDef(Enemy &Other) {
-    return def + defModif;
+    return max(0, def + defModif);
 }
 
 int Goblin::damageDealt(Enemy &Other) {
@@ -414,7 +414,7 @@ int Halfling::damageDealt(Player &Other) {
 }
 
 bool Halfling::causesOpponentMiss() const {
-    srand(static_cast<unsigned int>(time(nullptr)));
+    // srand(static_cast<unsigned int>(time(nullptr)));
     return (rand() % 2 == 0);
 }
 

@@ -20,6 +20,8 @@ enum class GameResult {Won, Died, Restarted, Quit, Init};
 unsigned seed = chrono::system_clock::now().time_since_epoch().count();
 default_random_engine rng{seed};
 
+
+
 const string potionNames[6] = { "RH", "BA", "BD", "PH", "WA", "WD" };
 
 GameResult runGame(int argc, char **argv, Player &pc) {
@@ -29,41 +31,43 @@ GameResult runGame(int argc, char **argv, Player &pc) {
     bool knownPotion[6] = {};
     char temp_character = '.';
 
+    const char *filename;
+
+    // step 0 - parse the graph and save Enemies, Player, DragonHoards
+    if(argc == 1) {
+        filename = "emptyfloor.txt";
+    } else {
+        filename = argv[1];
+    }
+
+    //cout << "before parsing" << endl;
+
+    ifstream iff{filename};
+
+    if(!iff) {
+        cout << "The floor file can not be read" << endl;
+        return GameResult::Quit;
+    }
+
     for(int i = 0; i < 5; i++) {
 
         vector<unique_ptr<Enemy>> enemies;
         vector<DragonHoard> dragonHoards;
 
         string map[25];
-        const char *filename;
-
-        // step 0 - parse the graph and save Enemies, Player, DragonHoards
-        if(argc == 1) {
-            filename = "emptyfloor.txt";
-        } else {
-            filename = argv[1];
-        }
 
         //cout << "before parsing" << endl;
-
-        ifstream iff{filename};
-
-        if(!iff) {
-            cout << "The floor file can not be read" << endl;
-            return GameResult::Quit;
-        }
-
-        cout << "before parsing" << endl;
         parse(map, enemies, pc, dragonHoards, iff);
         Grid game{map};
-        cout << "before create" << endl;
+        //cout << "before create" << endl;
         if(argc == 1) {
             create(game, enemies, pc, dragonHoards);
-
-        } 
-        linkDragonHoards(enemies, dragonHoards);
-
-        cout << "done" << endl;
+            iff.clear();
+            iff.seekg(0);
+        } else {
+            linkDragonHoards(enemies, dragonHoards);
+        }
+        //cout << "done" << endl;
 
         // all the possible commands:
         // 1. dir : no,so,ea,we,ne,nw,se,sw
@@ -74,9 +78,9 @@ GameResult runGame(int argc, char **argv, Player &pc) {
         // 6. q -> quit
         
         action = "Player character has spawned";
-        Display(game, pc, i+1, action);
         pc.curStepOn = '.';
         pc.resetAtkDefdelta(); // resets deltaATK, deltaDef to 0
+        Display(game, pc, i+1, action);
 
         while (true) {
             string command;
@@ -106,6 +110,11 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                 if (!(cin >> dir)) {
                     return GameResult::Quit;
                 }
+                if(!validDirection(dir)) {
+                    action = "Invalid direction, please re-enter";
+                    Display(game, pc, i+1, action);
+                    continue;
+                }
                 getans = nextMove(playerRow, playerCol ,dir);
                 nrow = getans.first;
                 ncol = getans.second;
@@ -127,6 +136,11 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                 if (!(cin >> dir)) {
                     return GameResult::Quit;
                 }
+                if(!validDirection(dir)) {
+                    action = "Invalid direction, please re-enter";
+                    Display(game, pc, i+1, action);
+                    continue;
+                }
                 getans = nextMove(playerRow, playerCol ,dir);
                 nrow = getans.first;
                 ncol = getans.second;
@@ -142,11 +156,20 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                         }
 
                         char T = game.get_position(nrow, ncol);
-                        int damage = playerAttack(pc, *element);
-                        int nowHP = element->getHp();
-                        action += "PC deals " + to_string(damage) + " damage to " + T + " (" + to_string(nowHP) + " HP). ";
+
+                        if(nextEnemy == EnemyT::Halfling && element->causesOpponentMiss()) {
+                            action += "PC misses, ";
+                        } else {
+                            int damage = playerAttack(pc, *element);
+                            int nowHP = element->getHp();
+                            action += "PC deals " + to_string(damage) + " damage to " + T + " (" + to_string(nowHP) + " HP). ";    
+                        }
+                        
 
                         if(!element->deathProcessed && !element->isAlive()) {
+                            if (pc.getType() == PlayerT::Goblin) {
+                                pc.addGold(5);
+                            }
                             element->deathProcessed = true;
                             game.set_position(nrow, ncol, '.');
                             if(nextEnemy == EnemyT::Human) {
@@ -183,7 +206,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                                 game.set_position(nrow, ncol, '6');
                             } else if(nextEnemy == EnemyT::Merchant) {
                                 game.set_position(nrow, ncol, '8');
-                            } else {
+                            } else if(nextEnemy != EnemyT::Dragon){
                                 // the document didn't mention at what rate pc gets 1 gold or 2 gold
                                 // so here we use random
                                 if(rng() % 2 == 0) pc.addGold(2);
@@ -216,7 +239,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                 }
 
                 string converter = Converter(dir);
-                action += "PC moves " + converter;
+                action += "PC moves " + converter + " ";
 
                 char destination = game.get_position(nrow, ncol);
                 game.move(playerRow, playerCol, nrow, ncol, pc.curStepOn);
@@ -245,7 +268,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                         int row = element.row;
                         int col = element.col;
                         if(row == nrow && col == ncol) {
-                            if(!element.guardian->isAlive()) {
+                            if(element.guardian != nullptr && !element.guardian->isAlive()) {
                                 dragon_slayed = true;
                             }
                             break;
@@ -261,8 +284,8 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                 for(int dx = -1; dx <= 1; dx++) {
                     bool saw = false;
                     for(int dy = -1; dy <= 1; dy++) {
-                        int nx = playerRow + dx;
-                        int ny = playerCol + dy;
+                        int nx = pc.getRow() + dx;
+                        int ny = pc.getCol() + dy;
                         char item = game.get_position(nx, ny);
                         if(item - '0' <= 5 && item - '0' >= 0 && knownPotion[item - '0'] == false) {
                             action += " and sees an unknown potion";
@@ -278,6 +301,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
             }
 
             if(!pc.isAlive()) {
+                cout << "The Player Died" << endl;
                 return GameResult::Died;
             }
 
@@ -287,8 +311,17 @@ GameResult runGame(int argc, char **argv, Player &pc) {
             for(auto &element : dragonHoards) {
                 if(IsNear(pc.getRow(), pc.getCol(), element.row, element.col)) {
                     if(element.guardian != nullptr && element.guardian->isAlive()) {
-                        int damage = enemyAttack(pc, *element.guardian);
-                        action += "Dragon deals " + to_string(damage) + " damage to PC.";
+                        if(rng() % 2 == 0) {
+                            int damage = enemyAttack(pc, *element.guardian);
+                            action += "Dragon deals " + to_string(damage) + " damage to PC.";
+                            if(!pc.isAlive()) {
+                                cout << "The Player Died" << endl;
+                                return GameResult::Died;
+                            }  
+                        } else {
+                            action += "Dragon misses.";
+                        }
+                        
                         attackedDragon[cntDragon] = element.guardian;
                         cntDragon++;
                     }
@@ -311,27 +344,31 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                     if(checkAtk == false && IsNear(pc.getRow(), pc.getCol(), element->getRow(), element->getCol())) {
                         if(indicator == 0) {
                             int damage = enemyAttack(pc, *element);
-                            action += "Dragon deals " + to_string(damage) + " damage to PC.";    
+                            action += "Dragon deals " + to_string(damage) + " damage to PC.";
+                            if(!pc.isAlive()) {
+                                cout << "The Player Died" << endl;
+                                return GameResult::Died;
+                            }
                         } else {
                             action += "Dragon misses.";    
                         }
                         
                     }
-                } else if(IsNear(pc.getRow(), pc.getCol(), element->getRow(), element->getCol())) {
-                    if(indicator == 0) {
-                        if(element->getType() == EnemyT::Merchant && isMerchantHostile || element->getType() != EnemyT::Merchant) {
+                } else if(IsNear(pc.getRow(), pc.getCol(), element->getRow(), element->getCol()) && ((element->getType() == EnemyT::Merchant && isMerchantHostile) || element->getType() != EnemyT::Merchant)) {  
+                    int attackCount = element->getAttackCount(pc);
+
+                    for(int k = 0; k < attackCount; k++) {
+                        if(rng() % 2 == 0) {
                             int damage = enemyAttack(pc, *element);
-                            
-                            action += string(1, type) + " deals " + to_string(damage) + " damage to PC.";    
+                            action += string(1, type) + " deals " + to_string(damage) + " damage to PC,"; 
                             if(pc.isAlive() == false) {
                                 cout << "The player Died" << endl;
                                 return GameResult::Died;
                             }
-                        }    
-                    } else {
-                        action += string(1, type) + " misses.";    
+                        } else {
+                            action += " " + string(1, type) + " misses.";
+                        }
                     }
-                    
                 } else if(!freeze){
                     int dx[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
                     int dy[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
@@ -407,6 +444,7 @@ GameResult playgame(int argc, char **argv, char race_choice) {
             if(result == GameResult::Won) {
                 cout << "You Won, your score is: " << pc.getGold() << endl;
             }
+            return result;
         }
         case 'g' : {
             Goblin pc;
@@ -414,6 +452,7 @@ GameResult playgame(int argc, char **argv, char race_choice) {
             if(result == GameResult::Won) {
                 cout << "You Won, your score is: " << pc.getGold() << endl;
             }
+            return result;
         }
         case 't' : {
             Troll pc;
@@ -434,13 +473,14 @@ GameResult playgame(int argc, char **argv, char race_choice) {
 }
 
 int main(int argc, char **argv) {
+    srand(static_cast<unsigned int>(time(nullptr)));
     GameResult gameState = GameResult::Init;
     char race_choice;
     cout << "please input a character race to continue ..." << endl;
     while(gameState != GameResult::Quit && cin >> race_choice) {
         gameState = playgame(argc, argv, race_choice);
         if(gameState == GameResult::Died) {
-            cout << "You Died, please input a race and try again" << endl;
+            cout << " You Died, please input a race and try again" << endl;
         } else if (gameState != GameResult::Quit){
             cout << "please input a character race to continue ..." << endl;
         }

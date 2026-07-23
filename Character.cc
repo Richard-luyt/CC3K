@@ -107,7 +107,7 @@ export class Enemy {
 
         Enemy(int startHp, int startAtk, int startDef, int startRow, int startCol);
     public:
-        bool deathProcessed;
+        bool deathProcessed = false;
         int getHp() const;
         virtual int getAtk (Player &Other) = 0;
         virtual int getDef (Player &Other) = 0;
