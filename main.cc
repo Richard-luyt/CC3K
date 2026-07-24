@@ -166,11 +166,10 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                         }
                         
 
-                        if(!element->deathProcessed && !element->isAlive()) {
+                        if(!element->isAlive()) {
                             if (pc.getType() == PlayerT::Goblin) {
                                 pc.addGold(5);
                             }
-                            element->deathProcessed = true;
                             game.set_position(nrow, ncol, '.');
                             if(nextEnemy == EnemyT::Human) {
                                 // the document also didn't mention how to handle the postion of the second gold pile

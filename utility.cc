@@ -111,25 +111,25 @@ export string Converter(string direction) {
     if(direction == "no"){
         return "North";
     }
-    if(direction == "so"){
+    else if(direction == "so"){
         return "South";
     }
-    if(direction == "ea"){
+    else if(direction == "ea"){
         return "East";
     }
-    if(direction == "we"){
+    else if(direction == "we"){
         return "West";
     }
-    if(direction == "ne"){
+    else if(direction == "ne"){
         return "North East";
     }
-    if(direction == "nw"){
+    else if(direction == "nw"){
         return "North West";
     }
-    if(direction == "se"){
+    else if(direction == "se"){
         return "South East";
     }
-    if(direction == "sw"){
+    else{
         return "South West";
     }
 }

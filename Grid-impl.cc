@@ -18,25 +18,25 @@ Grid::Grid(const string CreateMap[25]) {
         Map[i] = CreateMap[i];
     }
 
-    vector<int> minCol1 = {4,4,4,4};
-    vector<int> maxCol1 = {30,30,30,30};
-    Chamber c1{104,4,8,minCol1,maxCol1};
+    vector<int> minCol1 = {3,3,3,3};
+    vector<int> maxCol1 = {29,29,29,29};
+    Chamber c1{104,3,7,minCol1,maxCol1};
 
-    vector<int> minCol2 = {40,40,40,40,62,62,62,62,62,62};
-    vector<int> maxCol2 = {63,63,71,74,77,77,77,77,77,77};
-    Chamber c2{201,4,14,minCol2,maxCol2};
+    vector<int> minCol2 = {39,39,39,39,61,61,61,61,61,61};
+    vector<int> maxCol2 = {62,62,70,73,76,76,76,76,76,76};
+    Chamber c2{201,3,13,minCol2,maxCol2};
     
-    vector<int> minCol3 = {39,39,39};
-    vector<int> maxCol3 = {51,51,51};
-    Chamber c3{36,11,14,minCol3,maxCol3};
+    vector<int> minCol3 = {38,38,38};
+    vector<int> maxCol3 = {50,50,50};
+    Chamber c3{36,10,13,minCol3,maxCol3};
     
-    vector<int> minCol4 = {5,5,5,5,5,5,5};
-    vector<int> maxCol4 = {26,26,26,26,26,26,26};
-    Chamber c4{147,16,23,minCol4,maxCol4};
+    vector<int> minCol4 = {4,4,4,4,4,4,4};
+    vector<int> maxCol4 = {25,25,25,25,25,25,25};
+    Chamber c4{147,15,22,minCol4,maxCol4};
 
-    vector<int> minCol5 = {66,66,66,38,38,38};
-    vector<int> maxCol5 = {77,77,77,77,77,77};
-    Chamber c5{150,17,23,minCol5,maxCol5};
+    vector<int> minCol5 = {65,65,65,37,37,37};
+    vector<int> maxCol5 = {76,76,76,76,76,76};
+    Chamber c5{150,16,22,minCol5,maxCol5};
 
     Chambers[0] = c1;
     Chambers[1] = c2;
