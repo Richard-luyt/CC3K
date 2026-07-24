@@ -230,10 +230,6 @@ int Enemy::getHp() const {
     return hp;
 }
 
-int Enemy::getGold() const {
-    return gold;
-}
-
 int Enemy::getRow() const {
     return row;
 }
