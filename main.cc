@@ -20,15 +20,26 @@ enum class GameResult {Won, Died, Restarted, Quit, Init};
 unsigned seed = chrono::system_clock::now().time_since_epoch().count();
 default_random_engine rng{seed};
 
+const int FLOOR = 5;
+const int POTION_NUM = 6;
+const int GOBLIN_GOLD = 5;
+const double SHADE_MULT = 1.5;
+const int DIRECTION = 8;
+
+const char MERCHANT_HOARD = '8';
+const char NORMAL_GOLD = '6';
+const char SMALL_GOLD = '7';
+const char DRAGON_HOARD = '9';
 
 
-const string potionNames[6] = { "RH", "BA", "BD", "PH", "WA", "WD" };
+
+const string potionNames[POTION_NUM] = { "RH", "BA", "BD", "PH", "WA", "WD" };
 
 GameResult runGame(int argc, char **argv, Player &pc) {
     bool isMerchantHostile = false;
     bool freeze = false;
     string action = "";
-    bool knownPotion[6] = {};
+    bool knownPotion[POTION_NUM] = {};
     char temp_character = '.';
 
     const char *filename;
@@ -49,7 +60,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
         return GameResult::Quit;
     }
 
-    for(int i = 0; i < 5; i++) {
+    for(int i = 0; i < FLOOR; i++) {
 
         vector<unique_ptr<Enemy>> enemies;
         vector<DragonHoard> dragonHoards;
@@ -168,7 +179,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
 
                         if(!element->isAlive()) {
                             if (pc.getType() == PlayerT::Goblin) {
-                                pc.addGold(5);
+                                pc.addGold(GOBLIN_GOLD);
                             }
                             game.set_position(nrow, ncol, '.');
                             if(nextEnemy == EnemyT::Human) {
@@ -199,12 +210,12 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                                     int place = rng() % availableGold.size();
                                     int grow = availableGold[place].first;
                                     int gcol = availableGold[place].second;
-                                    game.set_position(grow, gcol, '6');
+                                    game.set_position(grow, gcol, NORMAL_GOLD);
                                 }
                                 
-                                game.set_position(nrow, ncol, '6');
+                                game.set_position(nrow, ncol, NORMAL_GOLD);
                             } else if(nextEnemy == EnemyT::Merchant) {
-                                game.set_position(nrow, ncol, '8');
+                                game.set_position(nrow, ncol, MERCHANT_HOARD);
                             } else if(nextEnemy != EnemyT::Dragon){
                                 // the document didn't mention at what rate pc gets 1 gold or 2 gold
                                 // so here we use random
@@ -249,19 +260,19 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                         return GameResult::Won;
                     }
                     break;
-                } else if(destination == '6') {
+                } else if(destination == NORMAL_GOLD) {
                     pc.addGold(2);
                     pc.curStepOn = '.';
                     action += " and picks up a 2 gold";
-                } else if(destination == '7') {
+                } else if(destination == NORMAL_GOLD) {
                     pc.addGold(1);
                     pc.curStepOn = '.';
                     action += " and picks up a 1 gold";
-                } else if(destination == '8') {
+                } else if(destination == MERCHANT_HOARD) {
                     pc.addGold(4);
                     pc.curStepOn = '.';
                     action += " and picks up a 4 gold";
-                } else if(destination == '9') {
+                } else if(destination == DRAGON_HOARD) {
                     bool dragon_slayed = false;
                     for(auto &element : dragonHoards) {
                         int row = element.row;
@@ -369,11 +380,11 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                         }
                     }
                 } else if(!freeze){
-                    int dx[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
-                    int dy[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
-                    bool available[8];
+                    int dx[DIRECTION] = {-1, -1, -1, 0, 0, 1, 1, 1};
+                    int dy[DIRECTION] = {-1, 0, 1, -1, 1, -1, 0, 1};
+                    bool available[DIRECTION];
                     int cnt = 0;
-                    for(int j = 0; j < 8; j++) {
+                    for(int j = 0; j < DIRECTION; j++) {
                         int nrow = element->getRow() + dx[j];
                         int ncol = element->getCol() + dy[j];
                         if(verifyMove(game, nrow, ncol, false) == true) {
@@ -385,7 +396,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                     }
                     if(cnt != 0) {
                         int choice = rng() % cnt + 1;
-                        for(int j = 0; j < 8; j++) {
+                        for(int j = 0; j < DIRECTION; j++) {
                             if(available[j] == true) {
                                 if(choice == 1) {
                                     int nrow = element->getRow() + dx[j];
@@ -425,7 +436,7 @@ GameResult playgame(int argc, char **argv, char race_choice) {
             Shade pc;
             GameResult result = runGame(argc, argv, pc);
             if(result == GameResult::Won) {
-                cout << "You Won, your score is: " << pc.getGold() * 1.5 << endl;
+                cout << "You Won, your score is: " << pc.getGold() * SHADE_MULT << endl;
             }
             return result;
         }
