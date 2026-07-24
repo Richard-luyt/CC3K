@@ -2,47 +2,65 @@ module grid;
 
 using namespace std;
 
-bool Grid::isFull(const Chamber& c) const{
-    for (int i = c.minRow; i < c.maxRow; i++) {
-        for (int j = c.minCol[i - c.minRow]; j < c.maxCol[i - c.minRow]; j++) {
-            if (Map[i][j] == '.' ) {
-                return false;
-            }
-        }
+bool Grid::isFull(int c) const {
+    for (const Position &p : chamberTiles[c]) {
+        if (Map[p.row][p.col] == '.') return false;
     }
     return true;
 }
 
+bool Grid::isFloor(char c) {
+    return c == '.' || c == '@' || c == '\\' ||
+           (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z');
+}
+
+int Grid::inchamber_fill(int i, int j, int cno) {
+    if (i < 0 || i >= 25 || j < 0 || j >= 79){
+        return 0;
+    } 
+    if (!isFloor(Map[i][j])) {
+        return 0;
+    }
+
+    if (inchamber[i*79 + j] != 0) {
+        return 0;
+    }
+
+    inchamber[i*79 + j] = cno;
+    chamberTiles[cno - 1].push_back(Position{i, j, cno - 1});
+
+    return 1 + inchamber_fill(i+1, j, cno) + inchamber_fill(i-1, j, cno)
+        + inchamber_fill(i, j+1, cno) + inchamber_fill(i, j-1, cno);
+}
+
+
 Grid::Grid(const string CreateMap[25]) {
+    
+    inchamber.assign(1975, 0);
+
     for(int i = 0; i < 25; i++) {
         Map[i] = CreateMap[i];
     }
 
-    vector<int> minCol1 = {3,3,3,3};
-    vector<int> maxCol1 = {29,29,29,29};
-    Chamber c1{104,3,7,minCol1,maxCol1};
+    for (int i = 1; i < 24; i++) {
+        for (int j = 1; j < 78; j++) {
+            if (isFloor(Map[i][j]) && inchamber[i*79 + j] == 0) {
+                chamberTiles.push_back({});
+                chamberSize.push_back(inchamber_fill(i, j, chamber_count));
+                chamber_count++;
+            }
+        }
+    }
+    cerr << "chambers: " << chamberSize.size() << " sizes:";
+    for (int s : chamberSize) cerr << ' ' << s;
+    cerr << '\n';
 
-    vector<int> minCol2 = {39,39,39,39,61,61,61,61,61,61};
-    vector<int> maxCol2 = {62,62,70,73,76,76,76,76,76,76};
-    Chamber c2{201,3,13,minCol2,maxCol2};
-    
-    vector<int> minCol3 = {38,38,38};
-    vector<int> maxCol3 = {50,50,50};
-    Chamber c3{36,10,13,minCol3,maxCol3};
-    
-    vector<int> minCol4 = {4,4,4,4,4,4,4};
-    vector<int> maxCol4 = {25,25,25,25,25,25,25};
-    Chamber c4{147,15,22,minCol4,maxCol4};
-
-    vector<int> minCol5 = {65,65,65,37,37,37};
-    vector<int> maxCol5 = {76,76,76,76,76,76};
-    Chamber c5{150,16,22,minCol5,maxCol5};
-
-    Chambers[0] = c1;
-    Chambers[1] = c2;
-    Chambers[2] = c3;
-    Chambers[3] = c4;
-    Chambers[4] = c5;
+    for(int i = 0; i < 25; i++) {
+        for(int j = 0; j < 79; j++) {
+            cout << inchamber[i][j];
+        }
+        cout << endl;
+    }
 
 }
 
@@ -80,40 +98,21 @@ char Grid::get_position(int row, int col) const {
 }
 
 Position Grid::generatePoint(int stairChamber) const {
-    int c = rand() % 5;
-    // cout << c << " ";
-    while (isFull(Chambers[c]) || c == stairChamber) {
-        c = rand() % 5;
-        // cout << c << " ";
-    }
-
-    const Chamber& selectedChamber = Chambers[c];
-    int pos = rand() % selectedChamber.size;
-    int row = 0;
-    int col = 0;
     
-    for (int i = 0; i < selectedChamber.maxRow - selectedChamber.minRow; i++) {
-        if (pos < selectedChamber.maxCol[i] - selectedChamber.minCol[i]) {
-            row = selectedChamber.minRow + i;
-            col = selectedChamber.minCol[i] + pos;
-            break;
-        }
-        pos -= selectedChamber.maxCol[i] - selectedChamber.minCol[i];
+    int n = chamberTiles.size();
+    int c = rand() % n;
+    // cout << c << " ";
+    while (isFull(c) || c == stairChamber) {
+        c = rand() % n;
     }
 
-    while(Map[row][col] != '.') {
-        pos = rand() % selectedChamber.size;
-        for (int i = 0; i < selectedChamber.maxRow - selectedChamber.minRow; i++) {
-            if (pos < selectedChamber.maxCol[i] - selectedChamber.minCol[i]) {
-                row = selectedChamber.minRow + i;
-                col = selectedChamber.minCol[i] + pos;
-                break;
-            }
-            pos -= selectedChamber.maxCol[i] - selectedChamber.minCol[i];
-        }
+    const auto &tiles = chamberTiles[c];
+    Position p = tiles[rand() % tiles.size()];
+    while (Map[p.row][p.col] != '.') {
+        p = tiles[rand() % tiles.size()];
     }
 
-    return Position{row, col, c};
+    return p;
 
 }
 

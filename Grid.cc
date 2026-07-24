@@ -35,16 +35,22 @@ export struct Position {
 
 export class Grid {
     private:
+    
         string Map[25];
-        Chamber Chambers[5];
-        bool isFull(const Chamber& c) const;
+        int chamber_count = 1;
+        vector<int> chamberSize;
+        vector<int> inchamber;
+        //Chamber Chambers[5];
+        vector<vector<Position>> chamberTiles;
+        bool isFull(int c) const;
+        int inchamber_fill(int i, int j, int cno);
+        bool isFloor(char c);
     public:
         Grid(const string CreateMap[25]);
         void set_position(int row, int col, char c);
         bool move(int prev_row, int prev_col, int cur_row, int cur_col, char& currStepOn);
         char get_position(int row, int col) const;
-        Position generatePoint(int stairChamber = -1) const; //(Option 1)
-        // pair<int, int> generatePoint();  (Option 2)
+        Position generatePoint(int stairChamber = -1) const;
         void generateDragonPair(vector<unique_ptr<Enemy>>& enemies, vector<DragonHoard>& h);
 
         friend ostream& operator<<(ostream &out, const Grid &g);
