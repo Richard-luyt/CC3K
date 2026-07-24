@@ -115,7 +115,6 @@ export class Enemy {
         virtual int getAttackCount(Player &Other) const { return 1; } // Elf overrides
         virtual bool causesOpponentMiss() const { return false; } // Halfling overrides
         virtual EnemyT getType() const = 0;
-        int getGold() const;
         int getRow() const;
         int getCol() const;
         bool isAlive() const;
