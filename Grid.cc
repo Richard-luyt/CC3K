@@ -39,7 +39,7 @@ export class Grid {
         string Map[25];
         int chamber_count = 1;
         vector<int> chamberSize;
-        vector<int> inchamber;
+        vector<vector<int>> inchamber;
         //Chamber Chambers[5];
         vector<vector<Position>> chamberTiles;
         bool isFull(int c) const;
