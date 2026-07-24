@@ -199,3 +199,4 @@ export void linkDragonHoards(vector<unique_ptr<Enemy>> &enemies, vector<DragonHo
         Dragons.erase(Dragons.begin() + bestind);
     }
 }
+
