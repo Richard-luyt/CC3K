@@ -22,11 +22,11 @@ int Grid::inchamber_fill(int i, int j, int cno) {
         return 0;
     }
 
-    if (inchamber[i*79 + j] != 0) {
+    if (inchamber[i][j] != 0) {
         return 0;
     }
 
-    inchamber[i*79 + j] = cno;
+    inchamber[i][j] = cno;
     chamberTiles[cno - 1].push_back(Position{i, j, cno - 1});
 
     return 1 + inchamber_fill(i+1, j, cno) + inchamber_fill(i-1, j, cno)
@@ -36,7 +36,7 @@ int Grid::inchamber_fill(int i, int j, int cno) {
 
 Grid::Grid(const string CreateMap[25]) {
     
-    inchamber.assign(1975, 0);
+    inchamber.assign(25, vector<int>(79, 0));
 
     for(int i = 0; i < 25; i++) {
         Map[i] = CreateMap[i];
@@ -44,7 +44,7 @@ Grid::Grid(const string CreateMap[25]) {
 
     for (int i = 1; i < 24; i++) {
         for (int j = 1; j < 78; j++) {
-            if (isFloor(Map[i][j]) && inchamber[i*79 + j] == 0) {
+            if (isFloor(Map[i][j]) && inchamber[i][j] == 0) {
                 chamberTiles.push_back({});
                 chamberSize.push_back(inchamber_fill(i, j, chamber_count));
                 chamber_count++;
