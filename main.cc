@@ -312,7 +312,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                     if(element.guardian != nullptr && element.guardian->isAlive()) {
                         if(rng() % 2 == 0) {
                             int damage = enemyAttack(pc, *element.guardian);
-                            action += "Dragon deals " + to_string(damage) + " damage to PC.";
+                            action += "Dragon deals " + to_string(damage) + " damage to PC. ";
                             if(!pc.isAlive()) {
                                 cout << "The Player Died" << endl;
                                 return GameResult::Died;
@@ -343,7 +343,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                     if(checkAtk == false && IsNear(pc.getRow(), pc.getCol(), element->getRow(), element->getCol())) {
                         if(indicator == 0) {
                             int damage = enemyAttack(pc, *element);
-                            action += "Dragon deals " + to_string(damage) + " damage to PC.";
+                            action += "Dragon deals " + to_string(damage) + " damage to PC. ";
                             if(!pc.isAlive()) {
                                 cout << "The Player Died" << endl;
                                 return GameResult::Died;
@@ -359,7 +359,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                     for(int k = 0; k < attackCount; k++) {
                         if(rng() % 2 == 0) {
                             int damage = enemyAttack(pc, *element);
-                            action += string(1, type) + " deals " + to_string(damage) + " damage to PC,"; 
+                            action += string(1, type) + " deals " + to_string(damage) + " damage to PC. "; 
                             if(pc.isAlive() == false) {
                                 cout << "The player Died" << endl;
                                 return GameResult::Died;
