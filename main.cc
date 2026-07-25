@@ -31,6 +31,13 @@ const char NORMAL_GOLD = '6';
 const char SMALL_GOLD = '7';
 const char DRAGON_HOARD = '9';
 
+const int NORMAL_GOLD_AMO = 2;
+const int SMALL_GOLD_AMO = 1;
+const int DRAGON_HOARD_AMO = 6;
+const int MERCHANT_HOARD_AMO = 4;
+
+const int MAP_HEIGHT = 25;
+
 
 
 const string potionNames[POTION_NUM] = { "RH", "BA", "BD", "PH", "WA", "WD" };
@@ -65,7 +72,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
         vector<unique_ptr<Enemy>> enemies;
         vector<DragonHoard> dragonHoards;
 
-        string map[25];
+        string map[MAP_HEIGHT];
 
         //cout << "before parsing" << endl;
         parse(map, enemies, pc, dragonHoards, iff);
@@ -219,7 +226,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                             } else if(nextEnemy != EnemyT::Dragon){
                                 // the document didn't mention at what rate pc gets 1 gold or 2 gold
                                 // so here we use random
-                                if(rng() % 2 == 0) pc.addGold(2);
+                                if(rng() % 2 == 0) pc.addGold(NORMAL_GOLD_AMO);
                                 else pc.addGold(1);
                             }
                         }
@@ -261,17 +268,17 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                     }
                     break;
                 } else if(destination == NORMAL_GOLD) {
-                    pc.addGold(2);
+                    pc.addGold(NORMAL_GOLD_AMO);
                     pc.curStepOn = '.';
-                    action += " and picks up a 2 gold";
-                } else if(destination == NORMAL_GOLD) {
-                    pc.addGold(1);
+                    action += "and picks up a normal gold. ";
+                } else if(destination == SMALL_GOLD) {
+                    pc.addGold(SMALL_GOLD_AMO);
                     pc.curStepOn = '.';
-                    action += " and picks up a 1 gold";
+                    action += "and picks up a small gold. ";
                 } else if(destination == MERCHANT_HOARD) {
-                    pc.addGold(4);
+                    pc.addGold(MERCHANT_HOARD_AMO);
                     pc.curStepOn = '.';
-                    action += " and picks up a 4 gold";
+                    action += "and picks up a merchant hoard. ";
                 } else if(destination == DRAGON_HOARD) {
                     bool dragon_slayed = false;
                     for(auto &element : dragonHoards) {
@@ -285,9 +292,9 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                         }
                     }
                     if(dragon_slayed){
-                        pc.addGold(6);
+                        pc.addGold(DRAGON_HOARD_AMO);
                         pc.curStepOn = '.';
-                        action += " and picks up a dragon hoard";
+                        action += "and picks up a dragon hoard. ";
                     }
                 }
 
@@ -298,7 +305,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                         int ny = pc.getCol() + dy;
                         char item = game.get_position(nx, ny);
                         if(item - '0' <= 5 && item - '0' >= 0 && knownPotion[item - '0'] == false) {
-                            action += " and sees an unknown potion";
+                            action += "Player sees an unknown potion. ";
                             saw = true;
                             break;
                         }
@@ -329,7 +336,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                                 return GameResult::Died;
                             }  
                         } else {
-                            action += "Dragon misses.";
+                            action += "Dragon misses. ";
                         }
                         
                         attackedDragon[cntDragon] = element.guardian;
@@ -360,7 +367,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                                 return GameResult::Died;
                             }
                         } else {
-                            action += "Dragon misses.";    
+                            action += "Dragon misses. ";    
                         }
                         
                     }
