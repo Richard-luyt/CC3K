@@ -157,7 +157,7 @@ void Grid::generateDragonPair(vector<unique_ptr<Enemy>>& enemies, vector<DragonH
 ostream& operator<<(ostream &out, const Grid &g) {
      for(int i = 0; i < 25; i++) {
         for(int j = 0; j < 79; j++) {
-            char c = g.Map[i][j];
+            char c = g.get_position(i, j);
             if (c == '@' || c == '\\') {
                 out << "\033[34m" << c << "\033[0m";
             } else if (c >= 'A' && c <= 'Z') {
@@ -221,27 +221,27 @@ void create(Grid& g, vector<unique_ptr<Enemy>>& enemies, Player& pc, vector<Drag
     //srand(static_cast<unsigned int>(time(nullptr)));
     Position p = g.generatePoint();
     pc.setPosition(p.row,p.col);
-    g.Map[p.row][p.col] = '@';
+    g.set_position(p.row, p.col, '@');
 
     p = g.generatePoint(p.chamber);
-    g.Map[p.row][p.col] = '\\';
+    g.set_position(p.row, p.col, '\\');
 
     for(int i = 0; i < 10; i++) {
         int r = rand() % 6;
         p = g.generatePoint();
-        g.Map[p.row][p.col] = '0' + r;
+        g.set_position(p.row, p.col, '0' + r);
     }
 
     for(int i = 0; i < 10; i++) {
         int r = rand() % 8;
         if (r < 5){
             p = g.generatePoint();
-            g.Map[p.row][p.col] = '6';
+            g.set_position(p.row, p.col, '6');
         } else if (r < 6){
             g.generateDragonPair(enemies, h);
         } else {
             p = g.generatePoint();
-            g.Map[p.row][p.col] = '7';
+            g.set_position(p.row, p.col, '7');
         }
     }
 
@@ -249,27 +249,27 @@ void create(Grid& g, vector<unique_ptr<Enemy>>& enemies, Player& pc, vector<Drag
         int r = rand() % 18;
         p = g.generatePoint();
         if (r < 4){
-            g.Map[p.row][p.col] = 'H';
+            g.set_position(p.row, p.col, 'H');
             enemies.push_back(make_unique<Human>());
             enemies.back()->setPosition(p.row, p.col);
         } else if (r < 7){
-            g.Map[p.row][p.col] = 'W';
+            g.set_position(p.row, p.col, 'W');
             enemies.push_back(make_unique<Dwarf>());
             enemies.back()->setPosition(p.row, p.col);
         }else if (r < 12){
-            g.Map[p.row][p.col] = 'L';
+            g.set_position(p.row, p.col, 'L');
             enemies.push_back(make_unique<Halfling>());
             enemies.back()->setPosition(p.row, p.col);
         } else if (r < 14){
-            g.Map[p.row][p.col] = 'E';
+            g.set_position(p.row, p.col, 'E');
             enemies.push_back(make_unique<Elf>());
             enemies.back()->setPosition(p.row, p.col);
         } else if (r < 16){
-            g.Map[p.row][p.col] = 'O';
+            g.set_position(p.row, p.col, 'O');
             enemies.push_back(make_unique<Orc>());
             enemies.back()->setPosition(p.row, p.col);
         } else {
-            g.Map[p.row][p.col] = 'M';
+            g.set_position(p.row, p.col, 'M');
             enemies.push_back(make_unique<Merchant>());
             enemies.back()->setPosition(p.row, p.col);
         }

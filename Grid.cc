@@ -53,9 +53,6 @@ export class Grid {
         Position generatePoint(int stairChamber = -1) const;
         void generateDragonPair(vector<unique_ptr<Enemy>>& enemies, vector<DragonHoard>& h);
 
-        friend ostream& operator<<(ostream &out, const Grid &g);
-        friend void create(Grid& g, vector<unique_ptr<Enemy>>& enemies, Player& pc, vector<DragonHoard>& h);
-
 };
 
 export ostream& operator<<(ostream &out, const Grid &g);
