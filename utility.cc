@@ -194,9 +194,17 @@ export void linkDragonHoards(vector<unique_ptr<Enemy>> &enemies, vector<DragonHo
             }
             i++;            
         }
+
+        if(bestplace == 10000) {
+            cerr << "Error: Hoard at (" << hoard.row << ", " << hoard.col << ") is not linking to any dragon." << endl;
+            continue;
+        }
         
         hoard.guardian = Dragons[bestind];
         Dragons.erase(Dragons.begin() + bestind);
+    }
+    for(Enemy *element : Dragons) {
+        cerr << "Error: Dragon at (" << element->getRow() << " " << element->getCol() << ") is not linking to any dragon hoard." << endl;
     }
 }
 

@@ -305,7 +305,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                         int ny = pc.getCol() + dy;
                         char item = game.get_position(nx, ny);
                         if(item - '0' <= 5 && item - '0' >= 0 && knownPotion[item - '0'] == false) {
-                            action += "Player sees an unknown potion. ";
+                            action += "PC sees an unknown potion. ";
                             saw = true;
                             break;
                         }
@@ -314,7 +314,6 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                         break;
                     }
                 }
-                action += ".";
             }
 
             if(!pc.isAlive()) {
