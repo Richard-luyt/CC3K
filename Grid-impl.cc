@@ -51,16 +51,6 @@ Grid::Grid(const string CreateMap[25]) {
             }
         }
     }
-    cerr << "chambers: " << chamberSize.size() << " sizes:";
-    for (int s : chamberSize) cerr << ' ' << s;
-    cerr << '\n';
-
-    for(int i = 0; i < 25; i++) {
-        for(int j = 0; j < 79; j++) {
-            cout << inchamber[i][j];
-        }
-        cout << endl;
-    }
 
 }
 
