@@ -241,7 +241,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                 string dir;
                 dir = command;
                 if(!validDirection(dir)) {
-                    action = "Invalide direction, please re-input";
+                    action = "Invalid direction, please re-input";
                     Display(game, pc, i+1, action);
                     continue;
                 }
@@ -250,7 +250,7 @@ GameResult runGame(int argc, char **argv, Player &pc) {
                 ncol = getans.second;
 
                 if(!verifyMove(game, nrow, ncol, true)){
-                    action = "Invalide move, please re-input";
+                    action = "Invalid move, please re-input";
                     Display(game, pc, i+1, action);
                     continue;
                 }
