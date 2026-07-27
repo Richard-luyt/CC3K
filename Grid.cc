@@ -16,7 +16,7 @@ export class DragonHoard {
         int row;
         int col;
         Enemy *guardian = nullptr;
-
+};
 
 export struct Position {
     int row;
