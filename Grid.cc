@@ -15,17 +15,8 @@ export class DragonHoard {
     public:
         int row;
         int col;
-        Enemy *guardian = nullptr; //this points to the dragon that looks after it
-};
+        Enemy *guardian = nullptr;
 
-export class Chamber {
-    public:
-        int size;
-        int minRow;
-        int maxRow;
-        vector<int> minCol;
-        vector<int> maxCol;
-};
 
 export struct Position {
     int row;
@@ -40,7 +31,6 @@ export class Grid {
         int chamber_count = 1;
         vector<int> chamberSize;
         vector<vector<int>> inchamber;
-        //Chamber Chambers[5];
         vector<vector<Position>> chamberTiles;
         bool isFull(int c) const;
         int inchamber_fill(int i, int j, int cno);

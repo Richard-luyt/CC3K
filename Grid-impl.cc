@@ -91,7 +91,6 @@ Position Grid::generatePoint(int stairChamber) const {
     
     int n = chamberTiles.size();
     int c = rand() % n;
-    // cout << c << " ";
     while (isFull(c) || c == stairChamber) {
         c = rand() % n;
     }
@@ -208,7 +207,6 @@ void parse(string(&map)[25], vector<unique_ptr<Enemy>>& enemies, Player& pc, vec
 }
 
 void create(Grid& g, vector<unique_ptr<Enemy>>& enemies, Player& pc, vector<DragonHoard>& h) {
-    //srand(static_cast<unsigned int>(time(nullptr)));
     Position p = g.generatePoint();
     pc.setPosition(p.row,p.col);
     g.set_position(p.row, p.col, '@');
