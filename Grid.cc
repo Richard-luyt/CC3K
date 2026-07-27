@@ -11,12 +11,15 @@ import character;
 
 using namespace std;
 
+const int HEIGHT = 25;
+const int WIDTH = 79;
+
 export class DragonHoard {
     public:
         int row;
         int col;
         Enemy *guardian = nullptr;
-
+};
 
 export struct Position {
     int row;
@@ -27,16 +30,16 @@ export struct Position {
 export class Grid {
     private:
     
-        string Map[25];
+        string Map[HEIGHT];
         int chamber_count = 1;
         vector<int> chamberSize;
         vector<vector<int>> inchamber;
         vector<vector<Position>> chamberTiles;
         bool isFull(int c) const;
-        int inchamber_fill(int i, int j, int cno);
         bool isFloor(char c);
+        int inchamber_fill(int i, int j, int cno);
     public:
-        Grid(const string CreateMap[25]);
+        Grid(const string CreateMap[HEIGHT]);
         void set_position(int row, int col, char c);
         bool move(int prev_row, int prev_col, int cur_row, int cur_col, char& currStepOn);
         char get_position(int row, int col) const;
@@ -47,7 +50,7 @@ export class Grid {
 
 export ostream& operator<<(ostream &out, const Grid &g);
 
-export void parse(string(&map)[25], vector<unique_ptr<Enemy>>& enemies, Player& pc, vector<DragonHoard>& h, ifstream& f);
+export void parse(string(&map)[HEIGHT], vector<unique_ptr<Enemy>>& enemies, Player& pc, vector<DragonHoard>& h, ifstream& f);
 
 export void create(Grid& g, vector<unique_ptr<Enemy>>& enemies, Player& pc, vector<DragonHoard>& h);
 

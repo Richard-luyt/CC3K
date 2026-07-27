@@ -15,7 +15,7 @@ bool Grid::isFloor(char c) {
 }
 
 int Grid::inchamber_fill(int i, int j, int cno) {
-    if (i < 0 || i >= 25 || j < 0 || j >= 79){
+    if (i < 0 || i >= HEIGHT || j < 0 || j >= WIDTH){
         return 0;
     } 
     if (!isFloor(Map[i][j])) {
@@ -34,11 +34,11 @@ int Grid::inchamber_fill(int i, int j, int cno) {
 }
 
 
-Grid::Grid(const string CreateMap[25]) {
+Grid::Grid(const string CreateMap[HEIGHT]) {
     
-    inchamber.assign(25, vector<int>(79, 0));
+    inchamber.assign(HEIGHT, vector<int>(WIDTH, 0));
 
-    for(int i = 0; i < 25; i++) {
+    for(int i = 0; i < HEIGHT; i++) {
         Map[i] = CreateMap[i];
     }
 
@@ -144,8 +144,8 @@ void Grid::generateDragonPair(vector<unique_ptr<Enemy>>& enemies, vector<DragonH
 }
 
 ostream& operator<<(ostream &out, const Grid &g) {
-     for(int i = 0; i < 25; i++) {
-        for(int j = 0; j < 79; j++) {
+     for(int i = 0; i < HEIGHT; i++) {
+        for(int j = 0; j < WIDTH; j++) {
             char c = g.get_position(i, j);
             if (c == '@' || c == '\\') {
                 out << "\033[34m" << c << "\033[0m";
@@ -166,14 +166,14 @@ ostream& operator<<(ostream &out, const Grid &g) {
 
 }
 
-void parse(string(&map)[25], vector<unique_ptr<Enemy>>& enemies, Player& pc, vector<DragonHoard>& h, ifstream& f) {
+void parse(string(&map)[HEIGHT], vector<unique_ptr<Enemy>>& enemies, Player& pc, vector<DragonHoard>& h, ifstream& f) {
     
     string inp;
 
-    for (int i = 0; i < 25; i++) {
+    for (int i = 0; i < HEIGHT; i++) {
         getline(f, inp);
         map[i] = inp;
-        for (int j = 0; j < 79; j++) {
+        for (int j = 0; j < WIDTH; j++) {
             if (inp[j] == '@') {
                 pc.setPosition(i,j);
             } else if (inp[j] == 'H') {
