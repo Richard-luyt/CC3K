@@ -169,7 +169,7 @@ export void Display(const Grid &grid, const Player &pc, int floor, const string 
 
 }
 
-export void linkDragonHoards(vector<unique_ptr<Enemy>> &enemies, vector<DragonHoard> &dragonHoards) {
+export bool linkDragonHoards(vector<unique_ptr<Enemy>> &enemies, vector<DragonHoard> &dragonHoards) {
     vector <Enemy *> Dragons;
     for (auto &element : enemies) {
         if (element->getType() == EnemyT::Dragon) {
@@ -181,12 +181,14 @@ export void linkDragonHoards(vector<unique_ptr<Enemy>> &enemies, vector<DragonHo
         int bestplace = 10000;
         int bestind = 0;
         int i = 0;
+        int count = 0;
         for(auto &element : Dragons) {
             int rowDif = abs(element->getRow() - hoard.row);
             int colDif = abs(element->getCol() - hoard.col);
 
             if(rowDif <= 1 && colDif <= 1) {
                 int distance = rowDif + colDif;
+                count++;
                 if(distance < bestplace) {
                     bestplace = distance;
                     bestind = i;
@@ -195,9 +197,14 @@ export void linkDragonHoards(vector<unique_ptr<Enemy>> &enemies, vector<DragonHo
             i++;            
         }
 
+        if(count >= 2) {
+            cerr << "Error: Hoard at (" << hoard.row << ", " << hoard.col << ") has multiple dragons round it" << endl;
+            return true;
+        }
+
         if(bestplace == 10000) {
             cerr << "Error: Hoard at (" << hoard.row << ", " << hoard.col << ") is not linking to any dragon." << endl;
-            continue;
+            return true;
         }
         
         hoard.guardian = Dragons[bestind];
@@ -205,6 +212,8 @@ export void linkDragonHoards(vector<unique_ptr<Enemy>> &enemies, vector<DragonHo
     }
     for(Enemy *element : Dragons) {
         cerr << "Error: Dragon at (" << element->getRow() << " " << element->getCol() << ") is not linking to any dragon hoard." << endl;
+        return true;
     }
+    return false;
 }
 

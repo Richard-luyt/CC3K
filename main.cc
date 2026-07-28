@@ -83,7 +83,9 @@ GameResult runGame(int argc, char **argv, Player &pc) {
             iff.clear();
             iff.seekg(0);
         } else {
-            linkDragonHoards(enemies, dragonHoards);
+            if(linkDragonHoards(enemies, dragonHoards)) {
+                return GameResult::Quit;
+            }
         }
         //cout << "done" << endl;
 
