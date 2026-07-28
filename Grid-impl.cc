@@ -42,8 +42,8 @@ Grid::Grid(const string CreateMap[HEIGHT]) {
         Map[i] = CreateMap[i];
     }
 
-    for (int i = 1; i < 24; i++) {
-        for (int j = 1; j < 78; j++) {
+    for (int i = 1; i < HEIGHT - 1; i++) {
+        for (int j = 1; j < WIDTH - 1; j++) {
             if (isFloor(Map[i][j]) && inchamber[i][j] == 0) {
                 chamberTiles.push_back({});
                 chamberSize.push_back(inchamber_fill(i, j, chamber_count));
